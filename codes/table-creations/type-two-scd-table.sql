@@ -5,7 +5,7 @@
 -- CREATE TEMPORARY TABLE dim_emp_fy19
 SELECT
 	emp_id, gender, fy20_jul_age - 1 AS age, 						-- Have to subtract age by 1 because we're getting emp data from 1 year ago 
-    CASE 															-- Have to manually redo age group because we're subtracting fy20 age by 1 year 
+    CASE 											-- Have to manually redo age group because we're subtracting fy20 age by 1 year 
 		WHEN fy20_jul_age - 1 BETWEEN 16 AND 19 THEN "16 to 19" 	
         WHEN fy20_jul_age - 1 BETWEEN 20 AND 29 THEN "20 to 29"
         WHEN fy20_jul_age - 1 BETWEEN 30 AND 39 THEN "30 to 39"
@@ -13,12 +13,12 @@ SELECT
         WHEN fy20_jul_age - 1 BETWEEN 50 AND 59 THEN "50 to 59"
         WHEN fy20_jul_age - 1 BETWEEN 60 AND 69 THEN "60 to 69"
 	END AS age_group,
-    last_hire_date AS hire_date,  									-- Use hire date to be more specific with naming convention
-    CASE 															-- Use 'from date' to indicate the date this employee starts a new position (if any)
+    last_hire_date AS hire_date,  								-- Use hire date to be more specific with naming convention
+    CASE 											-- Use 'from date' to indicate the date this employee starts a new position (if any)
 		WHEN last_hire_date < "2019-01-01" THEN "2019-01-01"
         ELSE last_hire_date
 	END AS from_date,
-    CASE 															-- Use 'end date' to indicate when this record will expire
+    CASE 											-- Use 'end date' to indicate when this record will expire
 		WHEN YEAR(last_hire_date) < 2020 THEN "2019-12-31"
         ELSE "uh oh... re-check logic"
 	END AS end_date, 
@@ -27,29 +27,29 @@ SELECT
     fy20_jl_bf_promo AS job_level, 
     fy19_perf_rating AS perf_rating, fy20_promo AS jl_promo,
     -- fy20_jl_aft_promo AS next_yr_job_level,
-    CASE 															-- Use 'current_flag' as an indicator of whether this record is active or not
+    CASE 											-- Use 'current_flag' as an indicator of whether this record is active or not
 		WHEN YEAR(last_hire_date) < 2020 THEN "N"
         ELSE "Y"
 	END AS current_flag,
-    CASE 															-- Used to tell whether this employee was employed in the company within the specified year 
+    CASE 											-- Used to tell whether this employee was employed in the company within the specified year 
 		WHEN leaver_fy IS NOT NULL THEN "Y"
         ELSE "N"
 	END AS employed_flag,
-    CASE 															-- Used to indicate whether someone left the company within a specified year
+    CASE 											-- Used to indicate whether someone left the company within a specified year
 		WHEN leaver_fy IS NOT NULL THEN "N"
 	END AS leaver_flag,
-    CASE 															-- Used to indicate whether someone was recently hired within a specified year
+    CASE 											-- Used to indicate whether someone was recently hired within a specified year
 		WHEN fy20_new_hire IS NOT NULL THEN "N"
 	END AS new_hire_flag,
-    CASE 															-- All values here are dummy values because there's no new hires in fy19_turnover_base_group
+    CASE 											-- All values here are dummy values because there's no new hires in fy19_turnover_base_group
 		WHEN fy20_base_group_turnover IS NOT NULL THEN "N"
 	END AS turnover_base_group,
-    CASE 															-- Used as an indicator for FY20 & FY21 table
+    CASE 											-- Used as an indicator for FY20 & FY21 table
 		WHEN fy20_promo = "Yes" THEN "Yes"
         ELSE "No"
 	END AS promo_base_group
 FROM dim_emp
-WHERE fy20_new_hire = "No" 											-- Get only employees in FY19
+WHERE fy20_new_hire = "No" 									-- Get only employees in FY19
 
 
 -- ----------------------------------------------------------------
@@ -59,29 +59,29 @@ WHERE fy20_new_hire = "No" 											-- Get only employees in FY19
 SELECT
 	emp_id, gender, fy20_jul_age AS age, age_group,
     last_hire_date AS hire_date,
-    CASE 															-- Use 'from date' to indicate the date this employee starts a new position (if any) 
+    CASE 											-- Use 'from date' to indicate the date this employee starts a new position (if any) 
 		WHEN last_hire_date < "2020-01-01" THEN "2020-01-01"
         ELSE last_hire_date
 	END AS from_date,
-    CASE 															-- Use 'end date' to indicate when this record will expire
+    CASE 											-- Use 'end date' to indicate when this record will expire
 		WHEN leaver_fy IS NOT NULL THEN "2020-12-31"
 	END AS end_date,
     yrs_since_last_hire, contract_id, region_country_id,
     fy20_last_dept AS dept,
     fy20_jl_aft_promo AS job_level, 
     fy20_perf_rating AS perf_rating, fy21_promo AS jl_promo,
-    CASE 															-- Use 'current_flag' as an indicator of whether this record is active or not
+    CASE 											-- Use 'current_flag' as an indicator of whether this record is active or not
 		WHEN last_hire_date IS NOT NULL THEN "N"
 	END AS current_flag,
-    CASE 															-- Used to tell whether this employee was employed in the company within the specified year  
+    CASE 											-- Used to tell whether this employee was employed in the company within the specified year  
 		WHEN leaver_fy = "Not Applicable" THEN "Y"
         ELSE "N"
 	END AS employed_flag,
-    CASE 															-- Used to indicate whether someone left the company within a specified year
+    CASE 											-- Used to indicate whether someone left the company within a specified year
 		WHEN leaver_fy != "Not Applicable" THEN "Y"
         ELSE "N"
 	END AS leaver_flag,
-    CASE 															-- Used to indicate whether someone was recently hired within a specified year
+    CASE 											-- Used to indicate whether someone was recently hired within a specified year
 		WHEN fy20_new_hire = "No" THEN "N"
         ELSE "Y"
 	END AS new_hire_flag,
@@ -95,7 +95,7 @@ FROM dim_emp
 -- CREATE TEMPORARY TABLE dim_emp_fy21
 SELECT
 	emp_id, gender, fy20_jul_age + 1 AS age, 						-- Have to subtract age by 1 because we're getting emp data from 1 year ago 
-    CASE 															-- Have to manually redo age group because we're adding fy20 age by 1 year  
+    CASE 				 							-- Have to manually redo age group because we're adding fy20 age by 1 year  
 		WHEN fy20_jul_age + 1 BETWEEN 16 AND 19 THEN "16 to 19"
         WHEN fy20_jul_age + 1 BETWEEN 20 AND 29 THEN "20 to 29"
         WHEN fy20_jul_age + 1 BETWEEN 30 AND 39 THEN "30 to 39"
@@ -104,53 +104,53 @@ SELECT
         WHEN fy20_jul_age + 1 BETWEEN 60 AND 69 THEN "60 to 69"
 	END AS age_group,
     last_hire_date AS hire_date, 
-    CASE 															-- Use 'from date' to indicate the date this employee starts a new position (if any)
+    CASE 											-- Use 'from date' to indicate the date this employee starts a new position (if any)
 		WHEN last_hire_date < "2021-01-01" THEN "2021-01-01"
         ELSE last_hire_date
 	END AS from_date,
-    CASE 															-- Use 'end date' to indicate when this record will expire
+    CASE 											-- Use 'end date' to indicate when this record will expire
 		WHEN leaver_fy IS NOT NULL THEN "9999-12-31"
 	END AS end_date, 
     yrs_since_last_hire + 1 AS yrs_since_last_hire,  contract_id, region_country_id,
     fy20_last_dept AS dept,
     fy21_jl_aft_promo AS job_level,
-    CASE 															-- All values here are dummy values because there's no fy21_perf_rating
+    CASE 											-- All values here are dummy values because there's no fy21_perf_rating
 		WHEN fy20_perf_rating IS NOT NULL THEN 0
         ELSE 0
 	END AS perf_rating, 
-    CASE 															-- All values here are dummy values because there's no fy22_jl_promo 
+    CASE 											-- All values here are dummy values because there's no fy22_jl_promo 
 		WHEN fy21_promo IS NOT NULL THEN "No"
         ELSE "No"
 	END AS jl_promo,
-    CASE 															-- Use 'current_flag' as an indicator of whether this record is active or not
+    CASE 											-- Use 'current_flag' as an indicator of whether this record is active or not
 		WHEN YEAR(last_hire_date) < 2021 THEN "Y"
         ELSE "N"
 	END AS current_flag,
-    CASE 															-- Used to tell whether this employee was employed in the company within the specified year 
+    CASE 											-- Used to tell whether this employee was employed in the company within the specified year 
 		WHEN leaver_fy = "Not Applicable" THEN "Y"
         ELSE "N"
 	END AS employed_flag,
-    CASE 															-- All values here are dummy values because there's no fy21_leaver
+    CASE 											-- All values here are dummy values because there's no fy21_leaver
 		WHEN leaver_fy != "Not Applicable" THEN "Y"
         ELSE "N"
 	END AS leaver_flag,
-    CASE 															-- All values here are dummy values because there's no new hires in fy21
+    CASE 											-- All values here are dummy values because there's no new hires in fy21
 		WHEN fy20_new_hire IS NOT NULL THEN "N"
 	END AS new_hire_flag,
-    CASE 															-- All values here are dummy values because there's no fy21_turnover_base_group 
+    CASE 											-- All values here are dummy values because there's no fy21_turnover_base_group 
 		WHEN fy20_base_group_turnover IS NOT NULL THEN "No"
 	END AS turnover_base_group,
-    CASE 															-- All values here are dummy values because there's no fy21_promo_base_group
+    CASE 											-- All values here are dummy values because there's no fy21_promo_base_group
 		WHEN fy20_promo IS NOT NULL THEN "No" 
 	END AS promo_base_group
 FROM dim_emp
-WHERE leaver_fy != "FY20" 											-- Get only employees in FY21 (Total FY20 Employees - Total FY20 Leavers)
+WHERE leaver_fy != "FY20" 									-- Get only employees in FY21 (Total FY20 Employees - Total FY20 Leavers)
 
 
 -- Data validation of total employee count for FY19, FY20 & FY21
-SELECT COUNT(emp_id) AS total_fy19_employees FROM dim_emp WHERE fy20_new_hire != "Yes" -- FY19 has 434 employees
-SELECT COUNT(emp_id) AS total_fy20_employees FROM dim_emp -- FY20 has 500 employees
-SELECT (SELECT COUNT(emp_id) FROM dim_emp) - COUNT(emp_id) AS starting_fy21_employees FROM dim_emp WHERE fy20_leaver = "Yes" -- FY21 has 453 employees
+SELECT COUNT(emp_id) AS total_fy19_employees FROM dim_emp WHERE fy20_new_hire != "Yes" 							-- FY19 has 434 employees
+SELECT COUNT(emp_id) AS total_fy20_employees FROM dim_emp 										-- FY20 has 500 employees
+SELECT (SELECT COUNT(emp_id) FROM dim_emp) - COUNT(emp_id) AS starting_fy21_employees FROM dim_emp WHERE fy20_leaver = "Yes" 		-- FY21 has 453 employees
 
 -- ----------------------------------------------------------------------------------------------------------------------
 -- STEP 3b: Create remaining temporary tables on the gender diversity status in both job-level and job-level + dept group
