@@ -13,7 +13,7 @@ The goal now is to help the company visualize its HR KPIs and identify potential
 ## Screenshots
 
 ### Main Report Section
-![Main Report]()
+![Main Report](https://raw.githubusercontent.com/adamyangyang/gender-diversity-analysis/main/dashboard-report/main-dashboard-report.png)
 
 ### Hires Report Section
 ![Hires Report Section](https://raw.githubusercontent.com/adamyangyang/gender-diversity-analysis/main/dashboard-report/gifs/hires-report.gif)
