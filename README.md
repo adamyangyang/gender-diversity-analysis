@@ -8,15 +8,21 @@ Although HR has been working hard to improve the gender balance at its company's
 The goal now is to help the company visualize its HR KPIs and identify potential root causes for the slow progress in their gender diversity program.
 
 ## Data Model
-<img width="620" alt="Data Model" src="">
+<img width="620" alt="Data Model" src="https://raw.githubusercontent.com/adamyangyang/gender-diversity-analysis/main/dashboard-report/data-model.gif">
 
 ## Screenshots
 
 ### Main Report Section
-![Date Selection]()
+![Main Report]()
 
 ### Hires Report Section
 ![Hires Report Section](https://raw.githubusercontent.com/adamyangyang/gender-diversity-analysis/main/dashboard-report/gifs/hires-report.gif)
 
-### Promotions Report Section
-![Topic Selection]()
+### Performance Report Section
+![Performance Report Section](https://raw.githubusercontent.com/adamyangyang/gender-diversity-analysis/main/dashboard-report/gifs/performance-report.gif)
+
+### Turnovers Report Section
+![Turnovers Report Section](https://raw.githubusercontent.com/adamyangyang/gender-diversity-analysis/main/dashboard-report/gifs/turnovers-report.gif)
+
+### Recommendations Section
+![Recommendations Section](https://raw.githubusercontent.com/adamyangyang/gender-diversity-analysis/main/dashboard-report/gifs/recommendations.gif)
