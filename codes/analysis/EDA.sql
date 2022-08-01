@@ -15,33 +15,38 @@ WHERE YEAR(last_hire_date) = 2011
 
 -- Find how many employees were hired each year + show running total up to recent year
 -- Use common table expressions (CTE) & WINDOW( ) function to do it
-WITH t1 AS (SELECT 
-				YEAR(last_hire_date) AS yr,
-				COUNT(emp_id) AS total_emp
-			FROM dim_emp
-			GROUP BY 1
-			ORDER BY 1)
+WITH t1 AS (
+	SELECT 
+		YEAR(last_hire_date) AS yr,
+		COUNT(emp_id) AS total_emp
+	FROM dim_emp
+	GROUP BY 1
+	ORDER BY 1
+)
 
 SELECT 
-	yr, total_emp,
-    SUM(total_emp) OVER (ORDER BY yr) AS running_tot
+	yr, total_emp, 
+	SUM(total_emp) OVER (ORDER BY yr) AS running_tot
 FROM t1 			
 
--- Find avg num of emp hired over the entire dataset
+-- Find the average number of employees hired over the entire dataset
 -- Use common table expressions (CTE) & WINDOW( ) function to do it
-WITH t1 AS (SELECT 
-				YEAR(last_hire_date) AS yr,
-				COUNT(emp_id) AS total_emp
-			FROM dim_emp
-			GROUP BY 1
-			ORDER BY 1)
+WITH t1 AS (
+	SELECT 
+		YEAR(last_hire_date) AS yr,
+		COUNT(emp_id) AS total_emp
+	FROM dim_emp
+	GROUP BY 1
+	ORDER BY 1
+)
 
 SELECT 
 	COUNT(yr) AS total_yrs,
 	ROUND((SUM(total_emp) / COUNT(yr)),2) AS avg_hire_num
 FROM t1 			
 
--- Temp tables for finding hiring trend for gender throughout the entire dataset
+
+-- Find the hiring trend for both gender throughout the entire dataset
 -- STEP 1: Create temp table to get male & female hires by year
 -- CREATE TEMPORARY TABLE hiring_trend_by_yr_gender
 SELECT 
@@ -65,7 +70,7 @@ SELECT
 FROM hiring_trend_by_yr_gender
 GROUP BY 1
 
--- STEP 3: Get average num of male & female hires
+-- STEP 3: Get average number of male & female hires
 SELECT 
 	COUNT(yr) AS total_yrs,
     ROUND((SUM(male_hires) / COUNT(yr)),2) AS avg_m_hires,
@@ -76,7 +81,8 @@ FROM hiring_trend_pct_and_running_tot_by_yr_gender
 -- -------------------------------------------------------------------
 # # # # # # # # # # # # DIVERSITY ANALYSIS # # # # # # # # # # # # # #
 -- -------------------------------------------------------------------
--- Temp table for data without leavers 
+
+-- Create a table to analyze the company's diversity program situation in FY21 by excluding fy20 leavers
 -- CREATE TEMPORARY TABLE dim_emp_active
 SELECT *
 FROM dim_emp
@@ -121,8 +127,7 @@ FROM dim_emp_active dea
 WHERE f.fy20_jl_dept_group_pra_status = "Uneven - Men benefit"
 GROUP BY 1 	 			
 
--- ------------ Find why senior manager is uneven (men benefit)
-
+-- Find why senior manager is uneven (men benefit)
 -- Gender & age group breakdown of the job level (3 - Senior manager)
 SELECT 
 	de.gender, de.age_group,
@@ -153,8 +158,9 @@ GROUP BY 1, 2, 3
 ORDER BY 4 DESC  			
 
 
--- Compare with other job level categories 
--- Temp table to get total employees by other job level, gender & age group
+-- Let's compare how each job level category stack up to each other in terms of total employees, grand total and percentage breakdown.
+
+-- Get total employees by other job level, gender & age group
 -- STEP 1: Get emp number breakdown by job level, gender & age
 -- CREATE TEMPORARY TABLE jl_by_gender_age
 SELECT
@@ -186,8 +192,10 @@ SELECT
     CONCAT(ROUND((tot_emp / sub_grand_total)*100,2), "%") As pct_of_subtotal, grand_total
 FROM jl_multi_tot_by_gender_age
 -- WHERE job_level IN ('2 - Director', '4 - Manager')
-ORDER BY sub_grand DESC			*/
+ORDER BY sub_grand DESC			
 
+
+-- Based on the results above, let's check the hiring trend for employees across various categories 
 -- Hiring trend by working years & job_level
 SELECT 
 	yrs_since_last_hire AS wrking_yrs,
@@ -201,7 +209,9 @@ FROM dim_emp
 GROUP BY 1
 ORDER BY 1 	DESC			
 
--- Temp tables to get hiring trend by year & gender for 3 - senior manager
+-- Find hiring trend for uneven categories
+
+-- Start with hiring trend by year & gender for 3 - senior manager
 -- STEP 1: Get hiring trend by year & gender for senior manager
 -- CREATE TEMPORARY TABLE sm_hiring_trend_by_yr_gender
 SELECT 
@@ -268,7 +278,8 @@ FROM dim_emp
 WHERE fy21_jl_aft_promo = "3 - Senior Manager"
 	AND fy20_leaver != "Yes" 			
 
--- Temp tables to find what the gender % of those hire? 
+-- Based on the results above, let's find what the gender % is for those hires.
+
 -- STEP 1: Get total emp by gender in fy20
 -- CREATE TEMPORARY TABLE fy20_tot_sen_manager
 SELECT 
@@ -278,7 +289,6 @@ FROM dim_emp
 WHERE fy20_jl_aft_promo = "3 - Senior Manager"
 	AND fy20_leaver != "Yes" 
 GROUP BY 1
-
 
 -- STEP 2: Get emp difference in fy21
 -- CREATE TEMPORARY TABLE fy21_sm_starting_count
