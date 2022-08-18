@@ -8,7 +8,7 @@ Although HR has been working hard to improve the gender balance at its company's
 The goal now is to help the company visualize its HR KPIs and identify potential root causes for the slow progress in their gender diversity program.
 
 ## Data Model
-<img width="800" alt="Data Model" src="https://raw.githubusercontent.com/adamyangyang/gender-diversity-analysis/main/dashboard-report/data-model.gif">
+![Data Model](https://raw.githubusercontent.com/adamyangyang/gender-diversity-analysis/main/dashboard-report/data-model.gif)
 
 ## Screenshots
 
