@@ -1,4 +1,4 @@
-# Gender Diversity Analysis
+# HR Analytics
 
 ## Overview
 This project involves helping a company's HR department analyze the effectiveness of its employee gender diversity program.  
